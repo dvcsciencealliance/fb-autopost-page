@@ -1,2 +1,2 @@
-# fb-autopost-timeline
-Posts content to timeline if post contains a certain hashtag.
+# fb-autopost-post
+Shares posts published by other pages to page.

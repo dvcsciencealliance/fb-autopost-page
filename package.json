@@ -2,7 +2,7 @@
   "name": "fb-autopost-page",
   "version": "1.0.0",
   "description": "Posts content to timeline if post contains a certain hashtag.",
-  "main": "autopost.js",
+  "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -11,12 +11,14 @@
     "url": "git+https://github.com/dvcsciencealliance/fb-autopost-page.git"
   },
   "author": "Thomas Munduchira",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/dvcsciencealliance/fb-autopost-page/issues"
   },
   "homepage": "https://github.com/dvcsciencealliance/fb-autopost-page#readme",
   "dependencies": {
+    "express": "^4.14.0",
+    "fb": "^1.1.1",
     "mongoose": "^4.7.8"
   }
 }

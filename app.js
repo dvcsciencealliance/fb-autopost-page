@@ -1,20 +1,16 @@
-#!/usr/bin/env node
-var DB_URL = 'mongodb://heroku_pd20fzf7:raeil2305lh8usgscha4rl1rls@ds133279.mlab.com:33279/heroku_pd20fzf7;';
-var FB_PAGE_IDS = ['684072461662066'];
-var APP_VERSION = 'v2.8';
-var APP_ID = '156637641488227';
-var APP_SECRET = '0b6870f7abd9fd6d5d3e85ed2430dfe9';
-
+var express = require('express');
 var mongoose = require('mongoose');
-mongoose.connect(DB_URL);
+var config = require('./config');
+var FB = require('fb');
+mongoose.connect(config.db.url);
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 
-var Post = mongoose.model('Post', {
-  message: String,
-  id: String,
-  page_id: String
-});
+var routes = require('./routes');
+var app = express();
+app.use('/', routes);
+
+var Post = require('./models/post');
 
 function getLastPostIdOfPage(page_id) {
   Post.findOne({
@@ -41,13 +37,7 @@ function savePost(message, id, page_id) {
   });
 }
 
-FB.init({
-  appId      : APP_ID,
-  xfbml      : true,
-  version    : APP_VERSION
-});
-
-FB_PAGE_IDS.forEach(function(page_id) {
+config.page_ids.forEach(function(page_id) {
   var lastPostId = getLastPostIdOfPage(page_id);
   FB.api(
     "/{post-id}/posts",
@@ -61,6 +51,5 @@ FB_PAGE_IDS.forEach(function(page_id) {
 
   }
 });
-
 
 
