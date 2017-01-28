@@ -1,28 +1,10 @@
-var express = require('express');
 var mongoose = require('mongoose');
 var config = require('./config');
-var FB = require('fb');
 mongoose.connect(config.db.url);
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 
-var routes = require('./routes');
-var app = express();
-app.use('/', routes);
-
 var Post = require('./models/post');
-
-function getLastPostIdOfPage(page_id) {
-  Post.findOne({
-    page_id: page_id
-  }, function(err, post) {
-    if (err) {
-      console.error(err);
-    }
-
-    return post.id;
-  });
-}
 
 function savePost(message, id, page_id) {
   var post = new Post({
@@ -37,19 +19,18 @@ function savePost(message, id, page_id) {
   });
 }
 
+var FB = require('fb');
+FB.setAccessToken(config.access_token);
+
 config.page_ids.forEach(function(page_id) {
-  var lastPostId = getLastPostIdOfPage(page_id);
   FB.api(
-    "/{post-id}/posts",
-    function (response) {
-      if (response && !response.error) {
-        
-      }
-    }
-    );
-  while (postId !== lastPostId) {
-
-  }
+    page_id + '/feed?since=' + config.last_updated + '&date_format=U', 
+    function (res) {
+      if (!res || res.error) {
+       console.log(!res ? 'error occurred' : res.error);
+       return;
+     }
+     
+   });
 });
-
 
