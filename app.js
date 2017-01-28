@@ -1,26 +1,12 @@
-var mongoose = require('mongoose');
 var config = require('./config');
-mongoose.connect(config.db.url);
-var db = mongoose.connection;
-db.on('error', console.error.bind(console, 'connection error:'));
-
+var FB = require('fb');
 var Post = require('./models/post');
 
-function savePost(message, id, page_id) {
-  var post = new Post({
-    message: message,
-    id: id,
-    page_id: page_id
-  });
-  post.save(function(err) {
-    if (err) {
-      console.error(err);
-    }
-  });
-}
-
-var FB = require('fb');
 FB.setAccessToken(config.access_token);
+
+function post(message, id, page_id) {
+  
+}
 
 config.page_ids.forEach(function(page_id) {
   FB.api(
@@ -30,7 +16,6 @@ config.page_ids.forEach(function(page_id) {
        console.log(!res ? 'error occurred' : res.error);
        return;
      }
-     
    });
 });
 
