@@ -1,12 +1,7 @@
-var config = require('./config');
 var FB = require('fb');
-var Post = require('./models/post');
+var config = require('./config');
 
 FB.setAccessToken(config.access_token);
-
-function post(message, id, page_id) {
-  
-}
 
 config.page_ids.forEach(function(page_id) {
   FB.api(
@@ -16,6 +11,17 @@ config.page_ids.forEach(function(page_id) {
        console.log(!res ? 'error occurred' : res.error);
        return;
      }
+     res.data.forEach(function(post) {
+      FB.api(config.main_page_id + '/feed', 'post', {
+        link: 'https://www.facebook.com/' + config.main_page_id + '/posts/' + post.id
+      }, function (res) {
+        if (!res || res.error) {
+          console.log(!res ? 'error occurred' : res.error);
+          return;
+        }
+        console.log('Post Id: ' + res.id);
+      });
+    }); 
    });
 });
-
+*/
