@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/dvcsciencealliance/fb-autopost-page#readme",
   "dependencies": {
-    "fb": "^1.1.1"
+    "fb": "^1.1.1",
+    "mongoose": "^4.8.1"
   }
 }
