@@ -1,8 +1,8 @@
 var mongoose = require('mongoose');
 
 var Post = mongoose.model('Post', {
-  id: Number,
-  created_time: Number,
+  id: String,
+  updated_time: String,
   user: String,
   page: String,
   message: String,
