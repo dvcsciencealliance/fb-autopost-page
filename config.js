@@ -1,9 +1,9 @@
 var config = {
-  trigger_phrase: '',
+  trigger_phrase: 'a',
   db: {
     url: 'mongodb://heroku_pd20fzf7:raeil2305lh8usgscha4rl1rls@ds133279.mlab.com:33279/heroku_pd20fzf7'
   },
-  start_time: 1483981900,
+  start_time: 1483565262,
   main_page_id: 658513514333498,
   page_ids: [330738923729053],
   user_access_token: 'EAACOdgr6t2MBAMN7gMDlHjSDRHkCz3hEYIU3qbtBuJt06TM1vUFZCsIBoIf1ZCWHCAynyjA9oZALNZBMMtOnEqepGS0emdRXV8PyDJp2PzZBqaPkPbs2uUsqznt2wsHPXywjtZAjfcd1Q7IrVxUVAgJZAzgGZCQfP7wZD',

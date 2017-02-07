@@ -1,6 +1,10 @@
 var config = require('./config');
 
+var async = require('async');
+
 var mongoose = require('mongoose');
+var Promise = require('bluebird');
+mongoose.Promise = Promise;
 mongoose.connect(config.db.url);
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
@@ -39,6 +43,9 @@ function containsPost(post) {
     Post.findOne({
       id: post.id
     }).exec(function(err, post) {
+      if (err) {
+        return console.error(err);
+      }
       if (post) {
         return true;
       } else {
@@ -50,7 +57,7 @@ function containsPost(post) {
   }
 }
 
-function addPostToDatabase(post) {
+function addPostToDatabase(post, callback) {
   var db_post = new Post({
     id: post.id,
     updated_time: post.updated_time,
@@ -65,19 +72,40 @@ function addPostToDatabase(post) {
     }
     console.log(db_post.id + " added to database");
   });
-  return db_post;
+  return callback(db_post);
+}
+
+function generatePost(db_post, callback) {
+  var message = "";
+  var link = "";
+  if (db_post.user) {
+    message = db_post.user + " posted";
+    if (db_post.page) {
+      message +=  " to " + db_post.page;
+    }
+    message += ": ";
+  }
+  if (db_post.message) {
+    message += db_post.message;
+  }
+  if (db_post.link) {
+    link = db_post.link;
+  }
+  return callback(message, link);
 }
 
 function addPostToPage(db_post) {
   FB.setAccessToken(config.page_access_token);
-  console.log(db_post);
-  FB.api(config.main_page_id + '/feed', 'post', {
-    message: db_post.user + " posted to " + db_post.page + ": " + db_post.message + "\n" + db_post.link
-  }, function (res) {
-    if (!res || res.error) {
-      return console.log(!res ? 'error occurred' : res.error);
-    }
-    console.log(db_post.id + " added to page");
+  generatePost(db_post, function(message, link) {
+    FB.api(config.main_page_id + '/feed', 'post', {
+      message: message,
+      link: link
+    }, function (res) {
+      if (!res || res.error) {
+        return console.log(!res ? 'error occurred' : res.error);
+      }
+      console.log(db_post.id + " added to page");
+    });
   });
 }
 
@@ -90,12 +118,15 @@ getLastTime(function(lastTime) {
         if (!res || res.error) {
           return console.log(!res ? 'error occurred' : res.error);
         }
-        res.data.forEach(function(post) {
+        console.log(res);
+        async.each(res.data, function(post) {
           if (isPostable(post) && !containsPost(post)) {
-            var db_post = addPostToDatabase(post);
-            addPostToPage(db_post);
+            addPostToDatabase(post, addPostToPage);
           }
-        }); 
+        }, function() {
+          mongoose.disconnect();
+          console.log("Database disconnected");
+        });
       });
   });
 });
